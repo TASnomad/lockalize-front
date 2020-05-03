@@ -1,0 +1,12 @@
+.footer {
+	background: #EEEEEE;
+	border-top: 1px solid #E0E0E0;
+	bottom: 0;
+	box-sizing: border-box;
+	left: 0;
+	padding: 10px;
+	margin: 0 auto;
+	position: absolute;
+	text-align: center;
+	width: 100%;
+}
