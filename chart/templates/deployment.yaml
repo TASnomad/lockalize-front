@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "chart.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "chart.matchLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "chart.templateMetadata" . | nindent 6 }}
+  spec:
+    containers:
+      - name: {{ .Chart.Name }}
+        image: {{ include "chart.container" . | quote }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+          - name: NODE_ENV
+            value: {{ .Release.Namespace }}
+        ports:
+          - containerPort: 80
+          - containerPort: 443
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+        volumeMounts:
+          - name: certificates
+            mountPath: "/etc/ssl"
+            readOnly: true
+        volumes:
+        - name: certificates
+          secret:
+            secretName: api-lockalize-me-tls
+          items:
+            - key: tls.crt
+              path: nginx.crt
+            - key: tls.key
+              path: nginx.key
