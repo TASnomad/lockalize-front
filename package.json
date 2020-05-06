@@ -28,9 +28,10 @@
 		"ts-jest": "^25.4.0"
 	},
 	"scripts": {
-		"start": "react-scripts start",
-		"build": "react-scripts build",
-		"test": "react-scripts test",
+		"start": "REACT_APP_STAGE=development react-scripts start",
+		"build:production": "REACT_APP_STAGE=production react-scripts build",
+		"build:staging": "REACT_APP_STAGE=staging react-scripts build",
+		"test": "REACT_APP_STAGE=test react-scripts test",
 		"test:e2e": "jest --verbose",
 		"eject": "react-scripts eject"
 	},
