@@ -1,1 +1,6 @@
+{{ include "chart.container" . | quote }} deployed in {{ .Release.Namespace }} environment
 
+You can monitor {{ .Release.Name }} deployment with the following commands:
+
+  $ helm status {{ .Release.Name }} --namespace {{ .Release.Namespace }}
+  $ helm get all {{ .Release.Name }} --namespace {{ .Release.Namespace }}
