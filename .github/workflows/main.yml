@@ -12,7 +12,7 @@ jobs:
     name: Test & build frontend app
     runs-on: ubuntu-latest
     env:
-      COMMIT: ${{ GITHUB_SHA::8 }}
+      COMMIT: ${{ GITHUB_SHA }}
       REGISTRY: "eu.gcr.io"
       PROJECT: "lockalize"
       IMAGE: "frontend"
@@ -20,10 +20,10 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    
+
     - name: Checkout dev branch & use Node.js v12.x
       uses: actions/checkout@v2
-    
+
     - uses: actions/setup-node@v1
       with:
         node-version: "12.x"
@@ -34,20 +34,20 @@ jobs:
           npm run test:e2e
       env:
         CI: true
-    
+
     - name: Setting up GCR credentials
       uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
       with:
         version: "290.0.1"
         project_id: "lockalize"
         service_account_key: ${{ secrets.GCR_KEY }}
-    
+
     - name: Build $IMAGE:$COMMIT image
       run: |
           gcloud auth configure-docker
           docker build -t "$REGISTRY/$PROJECT/$IMAGE:$COMMIT" \
             --build-arg BUILD_ENV="staging" .
-             
+
     - name: Publish $IMAGE:$COMMIT image
       run: docker push "$REGISTRY/$PROJECT/$IMAGE:$COMMIT"
 
@@ -55,8 +55,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [ ci ]
     env:
-      COMMIT: ${{ GITHUB_SHA::8 }}
-      
+      COMMIT: ${{ GITHUB_SHA }}
+
     steps:
 
       - uses: actions/checkout@v2
@@ -65,14 +65,14 @@ jobs:
         uses: digitalocean/action-doctl@v2
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-          
-      - name: Get Lockalize k8s config 
+
+      - name: Get Lockalize k8s config
         run: doctl kubernetes cluster kubeconfig save k8s-do-ams3-lockalize
-      
+
       - name: Deploy $IMAGE helm chart with $COMMIT image
         uses: WyriHaximus/github-action-helm3@v1
         with:
           exec: helm UPGRADE $IMAGE ./chart --namespace staging --set image.revision=$COMMIT
-        
+
       - name: Looking helm deployment
         run: helm status frontend --namespace staging
