@@ -41,7 +41,13 @@ jobs:
         CI: true
 
     - name: Setting up GCR credentials for Docker
-      run: docker login -u _json_key -p $(echo $GCR_KEY) https://eu.gcr.io
+      uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+      with:
+        version: "290.0.1"
+        service_account_key: ${{ secrets.GCR_KEY }}
+        project_id: $PROJECT
+    - run: |-
+        gcloud --quiet auth configure-docker
 
     - name: Build frontend image
       run: |
