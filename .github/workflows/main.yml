@@ -41,9 +41,7 @@ jobs:
         CI: true
 
     - name: Setting up GCR credentials for Docker
-      run: |
-          echo $GCR_KEY > keyfile.json
-          cat keyfile.json | docker login -u _json_key --password-stdin https://eu.gcr.io
+      run: docker login -u _json_key -p $(echo $GCR_KEY) https://eu.gcr.io
 
     - name: Build frontend image
       run: |
