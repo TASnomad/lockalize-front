@@ -57,7 +57,7 @@ jobs:
 
     - name: Publish frontend image
       run: |
-          gcloud docker --authorize-only
+          sudo docker login -u oauth2accesstoken -p "$(gcloud auth print-access-token)" https://eu.gcr.io
           docker push "$REGISTRY/$PROJECT/$IMAGE:$COMMIT"
 
   cd:
