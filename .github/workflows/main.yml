@@ -40,12 +40,8 @@ jobs:
       env:
         CI: true
 
-    - name: Setting up GCR credentials
-      uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
-      with:
-        version: "290.0.1"
-        project_id: "lockalize"
-        service_account_key: ${{ secrets.GCR_KEY }}
+    - name: Setting up GCR credentials for Docker
+      run: echo ${{ secrets.GCR_KEY }} | docker login -u _json_key --password-stdin https://eu.gcr.io
 
     - name: Build frontend image
       run: |
