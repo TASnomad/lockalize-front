@@ -26,8 +26,13 @@ jobs:
 
     - uses: actions/setup-node@v1
       with:
-        node-version: "12.x"
+		node-version: "12.x"
 
+	- name: Install missing dependencies for pptr
+	  run: |
+		  sudo apt update
+		  sudo apt-get install libwoff1 libopus0 libwebp6 libwebpdemux2 libenchant1c2a libgudev-1.0-0 libsecret-1-0 libhyphen0 libgdk-pixbuf2.0-0 libegl1 libgles2 libevent-2.1-6 libnotify4 libxslt1.1
+          sudo apt-get install xvfb
     - name: Install dependencies & run tests
       run: |
           npm ci
@@ -42,13 +47,13 @@ jobs:
         project_id: "lockalize"
         service_account_key: ${{ secrets.GCR_KEY }}
 
-    - name: Build $IMAGE:$COMMIT image
+    - name: Build ${{ IMAGE }}:${{ COMMIT }} image
       run: |
           gcloud auth configure-docker
           docker build -t "$REGISTRY/$PROJECT/$IMAGE:$COMMIT" \
             --build-arg BUILD_ENV="staging" .
 
-    - name: Publish $IMAGE:$COMMIT image
+    - name: Publish ${{ IMAGE }}:${{ COMMIT }} image
       run: docker push "$REGISTRY/$PROJECT/$IMAGE:$COMMIT"
 
   cd:
@@ -69,7 +74,7 @@ jobs:
       - name: Get Lockalize k8s config
         run: doctl kubernetes cluster kubeconfig save k8s-do-ams3-lockalize
 
-      - name: Deploy $IMAGE helm chart with $COMMIT image
+      - name: Deploy ${{ IMAGE }} helm chart with ${{ COMMIT }} image
         uses: WyriHaximus/github-action-helm3@v1
         with:
           exec: helm UPGRADE $IMAGE ./chart --namespace staging --set image.revision=$COMMIT

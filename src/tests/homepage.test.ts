@@ -9,6 +9,7 @@ describe("Homepage test", () => {
 	beforeAll(async () => {
 		browser = await puppeteer.launch({
 			headless: !!process.env.CI,
+			args: [ "--no-sandbox", "--disable-setuid-sandbox" ],
 		});
 		page = await browser.newPage();
 	});
