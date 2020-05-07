@@ -11,7 +11,7 @@ COPY package.json /app
 COPY package-lock.json /app
 WORKDIR /app
 
-RUN npm install
+RUN npm ci --only=prod
 RUN npm run "build:${NODE_ENV}"
 
 
