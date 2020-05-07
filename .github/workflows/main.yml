@@ -35,7 +35,7 @@ jobs:
           sudo apt-get install xvfb
     - name: Install dependencies & run tests
       run: |
-          npm ci
+          npm ci --silent
           npm run test:e2e
       env:
         CI: true
@@ -56,7 +56,9 @@ jobs:
             --build-arg BUILD_ENV="staging" .
 
     - name: Publish frontend image
-      run: docker push "$REGISTRY/$PROJECT/$IMAGE:$COMMIT"
+      run: |
+	      gcloud docker --authorize-only
+          docker push "$REGISTRY/$PROJECT/$IMAGE:$COMMIT"
 
   cd:
     runs-on: ubuntu-latest
