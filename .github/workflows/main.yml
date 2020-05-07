@@ -47,13 +47,13 @@ jobs:
         project_id: "lockalize"
         service_account_key: ${{ secrets.GCR_KEY }}
 
-    - name: Build ${{ IMAGE }}:${{ COMMIT }} image
+    - name: Build frontend image
       run: |
           gcloud auth configure-docker
           docker build -t "$REGISTRY/$PROJECT/$IMAGE:$COMMIT" \
             --build-arg BUILD_ENV="staging" .
 
-    - name: Publish ${{ IMAGE }}:${{ COMMIT }} image
+    - name: Publish frontend image
       run: docker push "$REGISTRY/$PROJECT/$IMAGE:$COMMIT"
 
   cd:
@@ -74,7 +74,7 @@ jobs:
       - name: Get Lockalize k8s config
         run: doctl kubernetes cluster kubeconfig save k8s-do-ams3-lockalize
 
-      - name: Deploy ${{ IMAGE }} helm chart with ${{ COMMIT }} image
+      - name: Deploy frontend helm chart with CI build image
         uses: WyriHaximus/github-action-helm3@v1
         with:
           exec: helm UPGRADE $IMAGE ./chart --namespace staging --set image.revision=$COMMIT
