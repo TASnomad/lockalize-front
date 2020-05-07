@@ -45,7 +45,7 @@ jobs:
       with:
         version: "290.0.1"
         service_account_key: ${{ secrets.GCR_KEY }}
-        project_id: $PROJECT
+        project_id: "lockalize"
     - run: |-
         gcloud --quiet auth configure-docker
 
