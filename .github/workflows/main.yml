@@ -45,7 +45,6 @@ jobs:
 
     - name: Build frontend image
       run: |
-          gcloud auth configure-docker
           docker build -t "$REGISTRY/$PROJECT/$IMAGE:$COMMIT" \
             --build-arg BUILD_ENV="staging" .
 
