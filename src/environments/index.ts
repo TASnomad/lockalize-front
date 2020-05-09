@@ -9,7 +9,7 @@ export * from "./staging";
 export * from "./test";
 
 const getEnvConfig = (): IEnv => {
-	const env = process.env.NODE_ENV as string;
+	const env = process.env.REACT_APP_STAGE as string;
 
 	switch (env) {
 		case "development":
