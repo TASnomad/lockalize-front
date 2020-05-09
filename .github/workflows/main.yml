@@ -57,6 +57,7 @@ jobs:
       run: docker push "$REGISTRY/$PROJECT/$IMAGE:$COMMIT"
 
   cd:
+    name: Deploy last build
     runs-on: ubuntu-latest
     needs: [ ci ]
     env:
@@ -75,7 +76,7 @@ jobs:
         run: doctl kubernetes cluster kubeconfig save k8s-do-ams3-lockalize
 
       - name: Deploy frontend helm chart with CI build image
-        uses: WyriHaximus/github-action-helm3@v1
+        uses: WyriHaximus/github-action-helm3@v1.0.0
         with:
           exec: helm UPGRADE $IMAGE ./chart --namespace staging --set image.revision=$COMMIT
 
