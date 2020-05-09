@@ -76,10 +76,5 @@ jobs:
       - name: Get Lockalize k8s config
         run: doctl kubernetes cluster kubeconfig save k8s-do-ams3-lockalize
 
-      - name: Deploy frontend helm chart with CI build image
-        uses: WyriHaximus/github-action-helm3@v1.0.0
-        with:
-          exec: helm upgrade $IMAGE ./chart --namespace staging --set image.revision=$COMMIT
-
-      - name: Looking helm deployment
-        run: helm status frontend --namespace staging
+      - name: Deploy frontend helm chart with CI build IMAGE
+        run: ./scripts/deploy.sh
