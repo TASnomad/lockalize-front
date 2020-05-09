@@ -47,17 +47,17 @@ jobs:
         project_id: "lockalize"
         service_account_key: ${{ secrets.GCR_KEY }}
         export_default_credentials: true
-    - name: Configuring Docker with GCR credentials
-      run: |
-        gcloud auth configure-docker
 
-    - name: Build frontend image
+    - name: Configuring Docker with GCR credentials
+      run: |-
+          gcloud --quiet auth configure-docker
+
+    - name: Build & publish frontend image
       run: |
+          echo "${{ secrets.GCR_KEY }}" | docker login -u _json_key --password-stdin https://eu.gcr.io
           docker build -t "$REGISTRY/$PROJECT/$IMAGE:$COMMIT" \
             --build-arg BUILD_ENV="staging" .
-
-    - name: Publish frontend image
-      run: docker push "$REGISTRY/$PROJECT/$IMAGE:$COMMIT"
+          docker push "$REGISTRY/$PROJECT/$IMAGE:$COMMIT"
 
   cd:
     runs-on: ubuntu-latest
