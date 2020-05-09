@@ -62,6 +62,7 @@ jobs:
     needs: [ ci ]
     env:
       COMMIT: ${{ github.sha }}
+      IMAGE: "frontend"
 
     steps:
 
