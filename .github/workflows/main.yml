@@ -50,7 +50,6 @@ jobs:
 
     - name: Build & publish frontend image
       run: |
-          gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://eu.gcr.io
           gcloud auth configure-docker
           docker build -t "$REGISTRY/$PROJECT/$IMAGE:$COMMIT" \
             --build-arg BUILD_ENV="staging" .
