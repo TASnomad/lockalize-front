@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { version } from "../../package.json";
 
 import "../styles/common.css";
 import { HeartIcon } from "./HeartIcon";
@@ -11,7 +12,7 @@ export default class Footer extends Component<FooterProps> {
 		return (
 			<footer className="footer">
 				<Typography variant="subtitle2" gutterBottom>
-					Lockalize &copy;{ (new Date()).getFullYear() }
+					Lockalize v{ version } &copy;{ (new Date()).getFullYear() }
 					<br />
 					Made with <HeartIcon /> in Paris
 				</Typography>

@@ -12,6 +12,7 @@ spec:
     metadata:
       labels:
         {{- include "chart.templateMetadata" . | nindent 8 }}
+        {{- include "chart.labels" . | nindent 8 }}
     spec:
       restartPolicy: Always
       volumes:
