@@ -1,4 +1,6 @@
-Lockalize frontend with react.js
+Lockalize frontend with React
+
+![Lockalize front CI](https://github.com/TASnomad/lockalize-front/workflows/Lockalize%20front%20CI/badge.svg)
 
 ## Available Scripts
 
@@ -13,9 +15,7 @@ The page will reload if you make edits.<br />
 You will also see any lint errors in the console.
 
 ### `npm run test:e2e`
-
-Launches the test runner in the interactive with puppeteer<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Launches the test runner with puppeteer<br />
 
 ### `npm run build`
 
@@ -24,8 +24,6 @@ It correctly bundles React in production mode and optimizes the build for the be
 
 The build is minified and the filenames include the hashes.<br />
 Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
 ### `npm run eject`
 
