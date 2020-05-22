@@ -12,5 +12,9 @@ helm version
 echo "Deploying frontend build $COMMIT in staging"
 helm upgrade $IMAGE ./chart --namespace staging --set image.revision=$COMMIT
 
+echo "Running helm tests"
+helm test frontend --namespace staging
+
 echo "Checking status from $COMMIT"
 helm status frontend --namespace staging
+
