@@ -21,6 +21,7 @@ describe("Homepage test", () => {
 
 		await page.goto("http://localhost:3000/");
 		await page.waitForSelector("div.teaser");
+		// await page.waitForSelector("button#android");
 
 		await browser.close();
 	}, 60000);

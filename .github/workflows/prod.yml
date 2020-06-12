@@ -1,0 +1,73 @@
+# This is a basic workflow to help you get started with Actions
+name: Production CI
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  ci:
+    name: Test & build frontend
+    runs-on: ubuntu-latest
+    env:
+      COMMIT: ${{ github.sha }}
+      REGISTRY: "eu.gcr.io"
+      PROJECT: "lockalize"
+      IMAGE: "frontend"
+
+    steps:
+    - name: Checkout dev branch & use Node.js v12.x
+      uses: actions/checkout@v2
+
+    - uses: actions/setup-node@v1
+      with:
+        node-version: "12.x"
+
+    - name: Install system dependencies for pptr
+      run: |
+        sudo apt update
+        sudo apt-get install libwoff1 libopus0 libwebp6 libwebpdemux2 libenchant1c2a libgudev-1.0-0 libsecret-1-0 libhyphen0 libgdk-pixbuf2.0-0 libegl1 libgles2 libevent-2.1-6 libnotify4 libxslt1.1
+        sudo apt-get install xvfb
+
+    - name: Install npm dependencies & run tests
+      run: |
+        npm ci --silent
+        npm run test:e2e
+
+    - name: Build production image
+      run: docker build -t "$REGISTRY/$PROJECT/$IMAGE:$COMMIT" .
+
+    - name: Authenticate into GCP
+      uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+      with:
+        service_account_name: ${{ secrets.GCLOUD_EMAIL }}
+        service_account_key: ${{ secrets.GCR_KEY }}
+        export_default_credentials: true
+
+    - name: Configure Docker for GCP
+      run: "gcloud auth configure-docker --quiet"
+
+    - name: Publish frontend image
+      run: docker push "$REGISTRY/$PROJECT/$IMAGE:$COMMIT"
+
+  cd:
+    name: Deploy last frontend build in production
+    runs-on: ubuntu-latest
+    needs: [ ci ]
+    env:
+      COMMIT: ${{ github.sha }}
+      IMAGE: "frontend"
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: Get Lockalize k8s config
+        run: doctl kubernetes cluster kubeconfig save k8s-do-ams3-lockalize
+
+      - name: Deploy frontend helm chart with CI build IMAGE
+        run: ./scripts/prod.sh

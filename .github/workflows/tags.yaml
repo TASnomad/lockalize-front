@@ -1,0 +1,35 @@
+# This is a basic workflow to help you get started with Actions
+name: Production image tagger
+
+on:
+  push:
+    branches:
+      - 'refs/tags/*'
+
+jobs:
+  tagger:
+      name: Tag Docker image used in production
+      runs-on: ubuntu-latest
+      env:
+        COMMIT: ${{ github.sha }}
+        TAG: ${{ github.ref }}
+        REGISTRY: "eu.gcr.io"
+        PROJECT: "lockalize"
+        IMAGE: "frontend"
+
+      steps:
+        - name: Authenticate into GCP
+          uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+          with:
+            service_account_name: ${{ secrets.GCLOUD_EMAIL }}
+            service_account_key: ${{ secrets.GCR_KEY }}
+            export_default_credentials: true
+
+        - name: Configure Docker for GCP
+          run: "gcloud auth configure-docker --quiet"
+
+        - name: Pull/tag & push production image
+          run: |
+            docker pull "$REGISTRY/$PROJECT/$IMAGE:$COMMIT"
+            docker tag "$REGISTRY/$PROJECT/$IMAGE:$COMMIT" "$REGISTRY/$PROJECT/$IMAGE:$TAG"
+            docker push "$REGISTRY/$PROJECT/$IMAGE:$TAG"
