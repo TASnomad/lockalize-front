@@ -1,5 +1,8 @@
 {{ include "chart.container" . | quote }} deployed in {{ .Release.Namespace }} environment
 
+Command to manually run liveness test:
+helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}
+
 You can monitor {{ .Release.Name }} deployment with the following commands:
 
   $ helm status {{ .Release.Name }} --namespace {{ .Release.Namespace }}

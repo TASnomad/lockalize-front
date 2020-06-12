@@ -9,12 +9,11 @@ chmod 700 ./get_helm.sh
 
 helm version
 
-echo "Deploying frontend build $COMMIT in staging"
-helm upgrade $IMAGE ./chart --namespace staging --set image.revision=$COMMIT
+echo "Deploying frontend build $COMMIT in production"
+helm upgrade $IMAGE ./chart --namespace production --set image.revision=$COMMIT
 
 echo "Running helm tests"
-helm test frontend --namespace staging
+helm test frontend --namespace production
 
 echo "Checking status from $COMMIT"
-helm status frontend --namespace staging
-
+helm status frontend --namespace production
